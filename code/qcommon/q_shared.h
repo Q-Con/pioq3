@@ -141,6 +141,11 @@ typedef int intptr_t;
 #include <ctype.h>
 #include <limits.h>
 
+#ifdef RPIMODS_REPLACETRIG
+#define sin(f) sinf(f)
+#define cos(f) cosf(f)
+#endif
+
 #ifdef _MSC_VER
   #include <io.h>
 
