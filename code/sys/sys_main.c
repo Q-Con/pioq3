@@ -31,6 +31,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <ctype.h>
 #include <errno.h>
 
+#ifndef RPIMODS_NOSDL
 #ifndef DEDICATED
 #ifdef USE_LOCAL_HEADERS
 #	include "SDL.h"
@@ -38,6 +39,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #else
 #	include <SDL.h>
 #	include <SDL_cpuinfo.h>
+#endif
 #endif
 #endif
 
@@ -49,6 +51,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 static char binaryPath[ MAX_OSPATH ] = { 0 };
 static char installPath[ MAX_OSPATH ] = { 0 };
+
+void bcm_host_init();  // TODO: Make RPi specific
 
 /*
 =================
@@ -139,7 +143,9 @@ void Sys_Exit( int ex )
 	CON_Shutdown( );
 
 #ifndef DEDICATED
+#ifndef RPIMODS_NOSDL
 	SDL_Quit( );
+#endif
 #endif
 
 #ifdef NDEBUG
@@ -172,6 +178,7 @@ cpuFeatures_t Sys_GetProcessorFeatures( void )
 	cpuFeatures_t features = 0;
 
 #ifndef DEDICATED
+#ifndef RPIMODS_NOSDL
 	if( SDL_HasRDTSC( ) )    features |= CF_RDTSC;
 	if( SDL_HasMMX( ) )      features |= CF_MMX;
 	if( SDL_HasMMXExt( ) )   features |= CF_MMX_EXT;
@@ -180,6 +187,7 @@ cpuFeatures_t Sys_GetProcessorFeatures( void )
 	if( SDL_HasSSE( ) )      features |= CF_SSE;
 	if( SDL_HasSSE2( ) )     features |= CF_SSE2;
 	if( SDL_HasAltiVec( ) )  features |= CF_ALTIVEC;
+#endif
 #endif
 
 	return features;
@@ -273,6 +281,10 @@ Sys_Print
 */
 void Sys_Print( const char *msg )
 {
+#if defined(RPIMODS_MISC)&&defined(_WIN32)
+   OutputDebugString(msg);
+#endif
+
 	CON_LogWrite( msg );
 	CON_Print( msg );
 }
@@ -490,6 +502,18 @@ void Sys_SigHandler( int signal )
 	Sys_Exit( 0 ); // Exit with 0 to avoid recursive signals
 }
 
+#if 0
+void Sys_SigAction(int sig, siginfo_t *info, void *v)
+{
+	ucontext_t *uc = (ucontext_t *)v;
+
+	fprintf(stderr, "arm_pc = 0x%08x\n", uc->uc_mcontext.arm_pc);
+	fprintf(stderr, "arm_lr = 0x%08x\n", uc->uc_mcontext.arm_lr);
+
+	Sys_SigHandler(sig);
+}
+#endif
+
 /*
 =================
 main
@@ -497,10 +521,12 @@ main
 */
 int main( int argc, char **argv )
 {
+	bcm_host_init();  // TODO: Make RPi specific
 	int   i;
 	char  commandLine[ MAX_STRING_CHARS ] = { 0 };
 
 #ifndef DEDICATED
+#ifndef RPIMODS_NOSDL
 	// SDL version check
 
 	// Compile time
@@ -522,6 +548,7 @@ int main( int argc, char **argv )
 		Sys_Print( "SDL version " MINSDL_VERSION " or greater required\n" );
 		Sys_Exit( 1 );
 	}
+#endif
 #endif
 
 	Sys_PlatformInit( );
@@ -558,13 +585,25 @@ int main( int argc, char **argv )
 	signal( SIGSEGV, Sys_SigHandler );
 	signal( SIGTERM, Sys_SigHandler );
 
+#if 0
+		struct sigaction action;
+
+		memset(&action, 0, sizeof(action));
+
+		action.sa_sigaction = Sys_SigAction;
+		action.sa_flags = SA_SIGINFO;
+
+		sigaction(SIGFPE, &action, NULL);
+#endif
 	while( 1 )
 	{
 #ifndef DEDICATED
+#ifndef RPIMODS_NOSDL
 		int appState = SDL_GetAppState( );
 
 		Cvar_SetValue( "com_unfocused",	!( appState & SDL_APPINPUTFOCUS ) );
 		Cvar_SetValue( "com_minimized", !( appState & SDL_APPACTIVE ) );
+#endif
 #endif
 
 		IN_Frame( );
