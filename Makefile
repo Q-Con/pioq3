@@ -172,6 +172,7 @@ SDIR=$(MOUNT_DIR)/server
 RDIR=$(MOUNT_DIR)/renderer
 CMDIR=$(MOUNT_DIR)/qcommon
 SDLDIR=$(MOUNT_DIR)/sdl
+ESDIR=$(MOUNT_DIR)/es
 ASMDIR=$(MOUNT_DIR)/asm
 SYSDIR=$(MOUNT_DIR)/sys
 GDIR=$(MOUNT_DIR)/game
@@ -322,6 +323,9 @@ ifneq (,$(findstring "$(PLATFORM)", "linux" "gnu_kfreebsd" "kfreebsd-gnu"))
     # -ffast-math will cause the client to die with SIGFPE on Alpha
     OPTIMIZE = $(OPTIMIZEVM)
   endif
+  ifeq ($(ARCH),arm)
+    #BASE_CFLAGS += -mfpu=vfp -mfloat-abi=softfp
+  endif
   endif
   endif
 
@@ -336,7 +340,11 @@ ifneq (,$(findstring "$(PLATFORM)", "linux" "gnu_kfreebsd" "kfreebsd-gnu"))
   THREAD_LIBS=-lpthread
   LIBS=-ldl -lm
 
-  CLIENT_LIBS=$(SDL_LIBS) -lGL
+  ifeq ($(ARCH),arm)
+    CLIENT_LIBS=
+  else
+    CLIENT_LIBS=$(SDL_LIBS) -lGL
+  endif
 
   ifeq ($(USE_OPENAL),1)
     ifneq ($(USE_OPENAL_DLOPEN),1)
@@ -518,6 +526,9 @@ ifeq ($(PLATFORM),mingw32)
   BINEXT=.exe
 
   LIBS= -lws2_32 -lwinmm -lpsapi
+  ifdef USBDK
+   LIBS += $(BR)/khclient.lib $(BR)/khclient.dll
+  endif
   CLIENT_LDFLAGS = -mwindows
   CLIENT_LIBS = -lgdi32 -lole32 -lopengl32
 
@@ -1439,13 +1450,17 @@ Q3OBJ = \
   $(B)/client/tr_surface.o \
   $(B)/client/tr_world.o \
   \
-  $(B)/client/sdl_gamma.o \
-  $(B)/client/sdl_input.o \
-  $(B)/client/sdl_snd.o \
-  \
   $(B)/client/con_passive.o \
   $(B)/client/con_log.o \
   $(B)/client/sys_main.o
+
+Q3OBJ += $(if $(or $(findstring arm,$(ARCH)), $(USBDK)), \
+	   $(B)/client/es_gamma.o $(B)/client/sdl_snd.o, \
+	   $(B)/client/sdl_gamma.o $(B)/client/sdl_snd.o)
+
+Q3OBJ += $(if $(USBDK), \
+	   $(B)/client/es_input.o, \
+	   $(B)/client/sdl_input.o)
 
 ifneq ($(USE_INTERNAL_JPEG),0)
   Q3OBJ += \
@@ -1614,8 +1629,9 @@ ifeq ($(USE_MUMBLE),1)
     $(B)/client/libmumblelink.o
 endif
 
-Q3POBJ += \
-  $(B)/client/sdl_glimp.o
+  Q3POBJ += $(if $(or $(findstring arm,$(ARCH)), $(USBDK)), \
+              $(B)/client/es_glimp.o $(B)/client/etc1encode.o, \
+              $(B)/client/sdl_glimp.o)
 
 Q3POBJ_SMP += \
   $(B)/clientsmp/sdl_glimp.o
@@ -2103,6 +2119,9 @@ $(B)/client/%.o: $(RDIR)/%.c
 	$(DO_CC)
 
 $(B)/client/%.o: $(SDLDIR)/%.c
+	$(DO_CC)
+
+$(B)/client/%.o: $(ESDIR)/%.c
 	$(DO_CC)
 
 $(B)/clientsmp/%.o: $(SDLDIR)/%.c

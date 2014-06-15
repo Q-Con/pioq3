@@ -31,6 +31,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <ctype.h>
 #include <errno.h>
 
+#ifndef RPIMODS_NOSDL
 #ifndef DEDICATED
 #ifdef USE_LOCAL_HEADERS
 #	include "SDL.h"
@@ -38,6 +39,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #else
 #	include <SDL.h>
 #	include <SDL_cpuinfo.h>
+#endif
 #endif
 #endif
 
@@ -49,6 +51,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 static char binaryPath[ MAX_OSPATH ] = { 0 };
 static char installPath[ MAX_OSPATH ] = { 0 };
+
+void bcm_host_init();  // TODO: Make RPi specific
 
 /*
 =================
@@ -198,7 +202,9 @@ static void Sys_Exit( int exitCode )
 	CON_Shutdown( );
 
 #ifndef DEDICATED
+#ifndef RPIMODS_NOSDL
 	SDL_Quit( );
+#endif
 #endif
 
 	if( exitCode < 2 )
@@ -232,6 +238,7 @@ cpuFeatures_t Sys_GetProcessorFeatures( void )
 	cpuFeatures_t features = 0;
 
 #ifndef DEDICATED
+#ifndef RPIMODS_NOSDL
 	if( SDL_HasRDTSC( ) )    features |= CF_RDTSC;
 	if( SDL_HasMMX( ) )      features |= CF_MMX;
 	if( SDL_HasMMXExt( ) )   features |= CF_MMX_EXT;
@@ -240,6 +247,7 @@ cpuFeatures_t Sys_GetProcessorFeatures( void )
 	if( SDL_HasSSE( ) )      features |= CF_SSE;
 	if( SDL_HasSSE2( ) )     features |= CF_SSE2;
 	if( SDL_HasAltiVec( ) )  features |= CF_ALTIVEC;
+#endif
 #endif
 
 	return features;
@@ -528,10 +536,12 @@ main
 */
 int main( int argc, char **argv )
 {
+	bcm_host_init();  // TODO: Make RPi specific
 	int   i;
 	char  commandLine[ MAX_STRING_CHARS ] = { 0 };
 
 #ifndef DEDICATED
+#ifndef RPIMODS_NOSDL
 	// SDL version check
 
 	// Compile time
@@ -556,6 +566,7 @@ int main( int argc, char **argv )
 
 		Sys_Exit( 1 );
 	}
+#endif
 #endif
 
 	Sys_PlatformInit( );
