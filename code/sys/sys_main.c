@@ -52,6 +52,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 static char binaryPath[ MAX_OSPATH ] = { 0 };
 static char installPath[ MAX_OSPATH ] = { 0 };
 
+void bcm_host_init();  // TODO: Make RPi specific
+
 /*
 =================
 Sys_SetBinaryPath
@@ -519,14 +521,8 @@ main
 */
 int main( int argc, char **argv )
 {
-   bcm_host_init();
-   return mymain(argc, argv);
-}
-
-
-int mymain( int argc, char **argv )
-{
-	int   i;
+	bcm_host_init();  // TODO: Make RPi specific
+        int   i;
 	char  commandLine[ MAX_STRING_CHARS ] = { 0 };
 
 #ifndef DEDICATED
