@@ -363,7 +363,7 @@ static float	s_skyTexCoords[SKY_SUBDIVISIONS+1][SKY_SUBDIVISIONS+1][2];
 
 static void DrawSkySide( struct image_s *image, const int mins[2], const int maxs[2] )
 {
-#ifdef VCMODS_OPENGLES
+#ifdef RPIMODS_OPENGLES
 	int s, t, i=0;
 	int size;
 	glIndex_t *indicies;
@@ -378,13 +378,13 @@ static void DrawSkySide( struct image_s *image, const int mins[2], const int max
 
 	for ( t = mins[1]+HALF_SKY_SUBDIVISIONS; t < maxs[1]+HALF_SKY_SUBDIVISIONS; t++ )
 	{
-#ifndef VCMODS_OPENGLES
+#ifndef RPIMODS_OPENGLES
 		qglBegin( GL_TRIANGLE_STRIP );
 #endif
 
 		for ( s = mins[0]+HALF_SKY_SUBDIVISIONS; s <= maxs[0]+HALF_SKY_SUBDIVISIONS; s++ )
 		{
-#ifdef VCMODS_OPENGLES
+#ifdef RPIMODS_OPENGLES
 			indicies[i++] = t*(SKY_SUBDIVISIONS+1) + s;
 			indicies[i++] = (t+1)*(SKY_SUBDIVISIONS+1) + s;
 #else
@@ -396,11 +396,11 @@ static void DrawSkySide( struct image_s *image, const int mins[2], const int max
 #endif
 		}
 
-#ifndef VCMODS_OPENGLES
+#ifndef RPIMODS_OPENGLES
 		qglEnd();
 #endif
 	}
-#ifdef VCMODS_OPENGLES	
+#ifdef RPIMODS_OPENGLES	
 	qglDisableClientState( GL_COLOR_ARRAY);
 	qglEnableClientState( GL_TEXTURE_COORD_ARRAY);
 	qglTexCoordPointer( 2, GL_FLOAT, 0, s_skyTexCoords );
@@ -842,7 +842,7 @@ void RB_StageIteratorSky( void ) {
 
 	// draw the outer skybox
 	if ( tess.shader->sky.outerbox[0] && tess.shader->sky.outerbox[0] != tr.defaultImage ) {
-#ifdef VCMODS_OPENGLES
+#ifdef RPIMODS_OPENGLES
 		qglColor4f( tr.identityLight, tr.identityLight, tr.identityLight, 1.0f );
 #else
 		qglColor3f( tr.identityLight, tr.identityLight, tr.identityLight );

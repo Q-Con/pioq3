@@ -25,7 +25,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <stdlib.h>
 #include <math.h>
 
-#ifndef VCMODS_NOSDL
+#ifndef RPIMODS_NOSDL
 #ifdef USE_LOCAL_HEADERS
 #  include "SDL.h"
 #else
@@ -265,7 +265,7 @@ static qboolean GLimp_StartDriverAndSetMode( int mode, qboolean fullscreen, Nati
    EGLint majorVersion;
    EGLint minorVersion;
 
-#ifndef VCMODS_NOSDL
+#ifndef RPIMODS_NOSDL
    if (!SDL_WasInit(SDL_INIT_VIDEO))
    {
       char driverName[ 64 ];

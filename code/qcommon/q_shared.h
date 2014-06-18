@@ -125,7 +125,7 @@ typedef int intptr_t;
 #include <ctype.h>
 #include <limits.h>
 
-#ifdef VCMODS_REPLACETRIG
+#ifdef RPIMODS_REPLACETRIG
 #define sin(f) sinf(f)
 #define cos(f) cosf(f)
 #endif

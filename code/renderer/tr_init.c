@@ -771,7 +771,7 @@ void GL_SetDefaultState( void )
 	//
 	glState.glStateBits = GLS_DEPTHTEST_DISABLE | GLS_DEPTHMASK_TRUE;
 
-#ifndef VCMODS_OPENGLES
+#ifndef RPIMODS_OPENGLES
 	qglPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
 #endif
 	qglDepthMask( GL_TRUE );
