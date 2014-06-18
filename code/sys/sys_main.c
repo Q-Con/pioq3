@@ -31,7 +31,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <ctype.h>
 #include <errno.h>
 
-#ifndef VCMODS_NOSDL
+#ifndef RPIMODS_NOSDL
 #ifndef DEDICATED
 #ifdef USE_LOCAL_HEADERS
 #	include "SDL.h"
@@ -141,7 +141,7 @@ void Sys_Exit( int ex )
 	CON_Shutdown( );
 
 #ifndef DEDICATED
-#ifndef VCMODS_NOSDL
+#ifndef RPIMODS_NOSDL
 	SDL_Quit( );
 #endif
 #endif
@@ -176,7 +176,7 @@ cpuFeatures_t Sys_GetProcessorFeatures( void )
 	cpuFeatures_t features = 0;
 
 #ifndef DEDICATED
-#ifndef VCMODS_NOSDL
+#ifndef RPIMODS_NOSDL
     if( SDL_HasRDTSC( ) )    features |= CF_RDTSC;
 	if( SDL_HasMMX( ) )      features |= CF_MMX;
 	if( SDL_HasMMXExt( ) )   features |= CF_MMX_EXT;
@@ -279,7 +279,7 @@ Sys_Print
 */
 void Sys_Print( const char *msg )
 {
-#if defined(VCMODS_MISC)&&defined(_WIN32)
+#if defined(RPIMODS_MISC)&&defined(_WIN32)
    OutputDebugString(msg);
 #endif
 
@@ -530,7 +530,7 @@ int mymain( int argc, char **argv )
 	char  commandLine[ MAX_STRING_CHARS ] = { 0 };
 
 #ifndef DEDICATED
-#ifndef VCMODS_NOSDL
+#ifndef RPIMODS_NOSDL
 	// SDL version check
 
 	// Compile time
@@ -602,7 +602,7 @@ int mymain( int argc, char **argv )
 	while( 1 )
 	{
 #ifndef DEDICATED
-#ifndef VCMODS_NOSDL
+#ifndef RPIMODS_NOSDL
 		int appState = SDL_GetAppState( );
 
 		Cvar_SetValue( "com_unfocused",	!( appState & SDL_APPINPUTFOCUS ) );

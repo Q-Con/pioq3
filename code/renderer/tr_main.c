@@ -1314,7 +1314,7 @@ R_DebugPolygon
 ================
 */
 void R_DebugPolygon( int color, int numPoints, float *points ) {
-#ifndef VCMODS_OPENGLES
+#ifndef RPIMODS_OPENGLES
 	int		i;
 
 	GL_State( GLS_DEPTHMASK_TRUE | GLS_SRCBLEND_ONE | GLS_DSTBLEND_ONE );

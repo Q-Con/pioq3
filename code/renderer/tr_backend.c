@@ -72,13 +72,13 @@ void GL_SelectTexture( int unit )
 
 	if ( unit == 0 )
 	{
-#ifdef VCMODS_OPENGLES
+#ifdef RPIMODS_OPENGLES
 		qglActiveTextureARB( GL_TEXTURE0);
 #else
 		qglActiveTextureARB( GL_TEXTURE0_ARB );
 #endif
 		GLimp_LogComment( "glActiveTextureARB( GL_TEXTURE0_ARB )\n" );
-#ifdef VCMODS_OPENGLES
+#ifdef RPIMODS_OPENGLES
 		qglClientActiveTextureARB( GL_TEXTURE0 );
 #else
 		qglClientActiveTextureARB( GL_TEXTURE0_ARB );
@@ -87,13 +87,13 @@ void GL_SelectTexture( int unit )
 	}
 	else if ( unit == 1 )
 	{
-#ifdef VCMODS_OPENGLES
+#ifdef RPIMODS_OPENGLES
 		qglActiveTextureARB( GL_TEXTURE1);
 #else
 		qglActiveTextureARB( GL_TEXTURE1_ARB );
 #endif
 		GLimp_LogComment( "glActiveTextureARB( GL_TEXTURE1_ARB )\n" );
-#ifdef VCMODS_OPENGLES
+#ifdef RPIMODS_OPENGLES
 		qglClientActiveTextureARB( GL_TEXTURE1);
 #else
 		qglClientActiveTextureARB( GL_TEXTURE1_ARB );
@@ -346,7 +346,7 @@ void GL_State( unsigned long stateBits )
 	//
 	if ( diff & GLS_POLYMODE_LINE )
 	{
-#ifndef VCMODS_OPENGLES
+#ifndef RPIMODS_OPENGLES
 		if ( stateBits & GLS_POLYMODE_LINE )
 		{
 			qglPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
@@ -487,7 +487,7 @@ void RB_BeginDrawingView (void) {
 		qglClearColor( 0.0f, 0.0f, 0.0f, 1.0f );	// FIXME: get color of sky
 #endif
 	}
-#ifdef VCMODS_DEPTH
+#ifdef RPIMODS_DEPTH
 	qglClear( clearBits | GL_COLOR_BUFFER_BIT);
 #else
 	qglClear( clearBits );
@@ -511,7 +511,7 @@ void RB_BeginDrawingView (void) {
 	// clip to the plane of the portal
 	if ( backEnd.viewParms.isPortal ) {
 		float	plane[4];
-#ifdef VCMODS_OPENGLES
+#ifdef RPIMODS_OPENGLES
 		float	plane2[4];
 #else
 		double	plane2[4];
@@ -671,7 +671,7 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 					}
 
 					if(!oldDepthRange)
-#ifdef VCMODS_OPENGLES
+#ifdef RPIMODS_OPENGLES
 						qglDepthRange (0, 0.3f);
 #else
 						qglDepthRange (0, 0.3);
@@ -686,7 +686,7 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 						qglMatrixMode(GL_MODELVIEW);
 					}
 
-#ifdef VCMODS_OPENGLES
+#ifdef RPIMODS_OPENGLES
 					qglDepthRange (0, 1.0f);
 #else
 					qglDepthRange (0, 1);
@@ -714,7 +714,7 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 	// go back to the world modelview matrix
 	qglLoadMatrixf( backEnd.viewParms.world.modelMatrix );
 	if ( depthRange ) {
-#ifdef VCMODS_OPENGLES
+#ifdef RPIMODS_OPENGLES
 		qglDepthRange (0, 1.0f);
 #else
 		qglDepthRange (0, 1);
@@ -754,7 +754,7 @@ void	RB_SetGL2D (void) {
 	qglScissor( 0, 0, glConfig.vidWidth, glConfig.vidHeight );
 	qglMatrixMode(GL_PROJECTION);
     qglLoadIdentity ();
-#ifdef VCMODS_OPENGLES
+#ifdef RPIMODS_OPENGLES
 	qglOrtho (0.0f, glConfig.vidWidth, glConfig.vidHeight, 0.0f, 0.0f, 1.0f);
 #else
 	qglOrtho (0, glConfig.vidWidth, glConfig.vidHeight, 0, 0, 1);
@@ -787,7 +787,7 @@ Used for cinematics.
 void RE_StretchRaw (int x, int y, int w, int h, int cols, int rows, const byte *data, int client, qboolean dirty) {
 	int			i, j;
 	int			start, end;
-#ifdef VCMODS_OPENGLES
+#ifdef RPIMODS_OPENGLES
 	vec2_t		texcoords[4];
 	vec2_t		verts[4];
 	glIndex_t	indicies[6] = {0, 1, 2, 0, 3, 2};
@@ -821,7 +821,7 @@ void RE_StretchRaw (int x, int y, int w, int h, int cols, int rows, const byte *
 	if ( cols != tr.scratchImage[client]->width || rows != tr.scratchImage[client]->height ) {
 		tr.scratchImage[client]->width = tr.scratchImage[client]->uploadWidth = cols;
 		tr.scratchImage[client]->height = tr.scratchImage[client]->uploadHeight = rows;
-#ifdef VCMODS_OPENGLES
+#ifdef RPIMODS_OPENGLES
       //don't do qglTexImage2D as this may end up doing a compressed image
       //on which we are not allowed to do further sub images
 		glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, cols, rows, 0, GL_RGBA, GL_UNSIGNED_BYTE, data );
@@ -847,7 +847,7 @@ void RE_StretchRaw (int x, int y, int w, int h, int cols, int rows, const byte *
 
 	RB_SetGL2D();
 
-#ifdef VCMODS_OPENGLES
+#ifdef RPIMODS_OPENGLES
 	qglColor4f( tr.identityLight, tr.identityLight, tr.identityLight, 1.0f );
 
 	verts[0][0] = x;  verts[0][1] = y;
@@ -889,7 +889,7 @@ void RE_UploadCinematic (int w, int h, int cols, int rows, const byte *data, int
 	if ( cols != tr.scratchImage[client]->width || rows != tr.scratchImage[client]->height ) {
 		tr.scratchImage[client]->width = tr.scratchImage[client]->uploadWidth = cols;
 		tr.scratchImage[client]->height = tr.scratchImage[client]->uploadHeight = rows;
-#ifdef VCMODS_OPENGLES
+#ifdef RPIMODS_OPENGLES
 		qglTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, cols, rows, 0, GL_RGBA, GL_UNSIGNED_BYTE, data );
 #else
 		qglTexImage2D( GL_TEXTURE_2D, 0, GL_RGB8, cols, rows, 0, GL_RGBA, GL_UNSIGNED_BYTE, data );
@@ -1065,7 +1065,7 @@ void RB_ShowImages( void ) {
 	image_t	*image;
 	float	x, y, w, h;
 	int		start, end;
-#ifdef VCMODS_OPENGLES
+#ifdef RPIMODS_OPENGLES
 	vec2_t  texcoords[4] = { {0.0f, 0.0f}, {1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f} };
 	vec2_t  verts[4];
 	glIndex_t indicies[6] = { 0, 1, 2, 0, 3, 2};
@@ -1080,7 +1080,7 @@ void RB_ShowImages( void ) {
 	qglFinish();
 
 	start = ri.Milliseconds();
-#ifdef VCMODS_OPENGLES
+#ifdef RPIMODS_OPENGLES
 	qglEnableClientState( GL_TEXTURE_COORD_ARRAY );
 #endif
 
@@ -1098,7 +1098,7 @@ void RB_ShowImages( void ) {
 			h *= image->uploadHeight / 512.0f;
 		}
 
-#ifdef VCMODS_OPENGLES
+#ifdef RPIMODS_OPENGLES
 		verts[0][0] = x;  verts[0][1] = y;
 		verts[1][0] = x+w;  verts[1][1] = y;
 		verts[2][0] = x+w;  verts[2][1] = y+h;
@@ -1122,7 +1122,7 @@ void RB_ShowImages( void ) {
 #endif
 	}
 
-#ifdef VCMODS_OPENGLES
+#ifdef RPIMODS_OPENGLES
 	qglDisableClientState( GL_TEXTURE_COORD_ARRAY );
 #endif
 	qglFinish();
@@ -1198,7 +1198,7 @@ const void	*RB_SwapBuffers( const void *data ) {
 		unsigned char *stencilReadback;
 
 		stencilReadback = ri.Hunk_AllocateTempMemory( glConfig.vidWidth * glConfig.vidHeight );
-#ifndef VCMODS_OPENGLES
+#ifndef RPIMODS_OPENGLES
 		qglReadPixels( 0, 0, glConfig.vidWidth, glConfig.vidHeight, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, stencilReadback );
 #endif
 
@@ -1212,7 +1212,7 @@ const void	*RB_SwapBuffers( const void *data ) {
 
 
 	if ( !glState.finishCalled ) {
-#ifndef VCMODS_OPENGLES
+#ifndef RPIMODS_OPENGLES
 		qglFinish();
 #endif
 	}

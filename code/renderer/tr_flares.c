@@ -271,7 +271,7 @@ void RB_TestFlare( flare_t *f ) {
 	glState.finishCalled = qfalse;
 
 	// read back the z buffer contents
-#ifndef VCMODS_OPENGLES
+#ifndef RPIMODS_OPENGLES
 	qglReadPixels( f->windowX, f->windowY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth );
 #endif
 

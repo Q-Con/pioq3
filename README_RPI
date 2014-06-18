@@ -1,11 +1,11 @@
 This is a port of Quake3 to run on BCM2835, based on the
 ioq3 codebase. All BCM2835-specific modifications are enclosed by one of
 
-VCMODS_MISC - small miscellaneous changes
-VCMODS_OPENGLES - remove desktop GL dependencies
-VCMODS_DEPTH - remove depth buffer clears
-VCMODS_REPLACETRIG - replace sin with sinf etc
-VCMODS_NOSDL - remove SDL dependencies
+RPIMODS_MISC - small miscellaneous changes
+RPIMODS_OPENGLES - remove desktop GL dependencies
+RPIMODS_DEPTH - remove depth buffer clears
+RPIMODS_REPLACETRIG - replace sin with sinf etc
+RPIMODS_NOSDL - remove SDL dependencies
 
 There is a suitable prebuilt sdl lib in "lib".
 

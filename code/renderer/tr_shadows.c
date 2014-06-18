@@ -124,7 +124,7 @@ void R_RenderShadowEdges( void ) {
 			// if it doesn't share the edge with another front facing
 			// triangle, it is a sil edge
 			if ( hit[ 1 ] == 0 ) {
-#ifdef VCMODS_OPENGLES
+#ifdef RPIMODS_OPENGLES
 				glIndex_t indicies[4];
 				indicies[0] = i;
 				indicies[1] = i+tess.numVertexes;
@@ -224,7 +224,7 @@ void RB_ShadowTessEnd( void ) {
 	GL_Bind( tr.whiteImage );
 	qglEnable( GL_CULL_FACE );
 	GL_State( GLS_SRCBLEND_ONE | GLS_DSTBLEND_ZERO );
-#ifdef VCMODS_OPENGLES
+#ifdef RPIMODS_OPENGLES
 	qglColor4f( 0.2f, 0.2f, 0.2f, 1.0f );
 #else
 	qglColor3f( 0.2f, 0.2f, 0.2f );
@@ -277,7 +277,7 @@ overlap and double darken.
 =================
 */
 void RB_ShadowFinish( void ) {
-#ifdef VCMODS_OPENGLES
+#ifdef RPIMODS_OPENGLES
 	vec3_t quad[4] = {
 		{-100.0f, 100.0f, -10.0},
 		{100.0f, 100.0f, -10.0f},
@@ -302,7 +302,7 @@ void RB_ShadowFinish( void ) {
 
     qglLoadIdentity ();
 
-#ifdef VCMODS_OPENGLES
+#ifdef RPIMODS_OPENGLES
 	qglColor4f( 0.6f, 0.6f, 0.6f, 1.0f );
 #else
 	qglColor3f( 0.6f, 0.6f, 0.6f );
@@ -312,7 +312,7 @@ void RB_ShadowFinish( void ) {
 //	qglColor3f( 1, 0, 0 );
 //	GL_State( GLS_DEPTHMASK_TRUE | GLS_SRCBLEND_ONE | GLS_DSTBLEND_ZERO );
 
-#ifdef VCMODS_OPENGLES
+#ifdef RPIMODS_OPENGLES
 	qglVertexPointer ( 3, GL_FLOAT, 0, quad );
 	qglDrawElements ( GL_TRIANGLE_STRIP, 6, GL_INDEX_TYPE, indicies );
 #else

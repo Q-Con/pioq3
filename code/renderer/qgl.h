@@ -26,11 +26,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #ifndef __QGL_H__
 #define __QGL_H__
 /*
-#ifdef VCMODS_NOSDL
+#ifdef RPIMODS_NOSDL
 #include <GLES/gl.h>
 */
 
-#ifdef VCMODS_OPENGLES
+#ifdef RPIMODS_OPENGLES
 #include <GLES/gl.h>
 
 
@@ -74,21 +74,21 @@ extern void (APIENTRYP qglUnlockArraysEXT) (void);
 #define qglBlendFunc glBlendFunc
 #define qglCallList glCallList
 #define qglCallLists glCallLists
-#ifdef VCMODS_DEPTH
+#ifdef RPIMODS_DEPTH
 #define qglClear myglClear
 #else
 #define qglClear glClear
 #endif
 #define qglClearAccum glClearAccum
 #define qglClearColor glClearColor
-#ifdef VCMODS_OPENGLES
+#ifdef RPIMODS_OPENGLES
 #define qglClearDepth glClearDepthf
 #else
 #define qglClearDepth glClearDepth
 #endif
 #define qglClearIndex glClearIndex
 #define qglClearStencil glClearStencil
-#ifdef VCMODS_OPENGLES
+#ifdef RPIMODS_OPENGLES
 #define qglClipPlane glClipPlanef
 #else
 #define qglClipPlane glClipPlane
@@ -138,7 +138,7 @@ extern void (APIENTRYP qglUnlockArraysEXT) (void);
 #define qglDeleteTextures glDeleteTextures
 #define qglDepthFunc glDepthFunc
 #define qglDepthMask glDepthMask
-#ifdef VCMODS_OPENGLES
+#ifdef RPIMODS_OPENGLES
 #define qglDepthRange glDepthRangef
 #else
 #define qglDepthRange glDepthRange
@@ -267,7 +267,7 @@ extern void (APIENTRYP qglUnlockArraysEXT) (void);
 #define qglNormal3s glNormal3s
 #define qglNormal3sv glNormal3sv
 #define qglNormalPointer glNormalPointer
-#ifdef VCMODS_OPENGLES
+#ifdef RPIMODS_OPENGLES
 #define qglOrtho glOrthof
 #else
 #define qglOrtho glOrtho
@@ -383,7 +383,7 @@ extern void (APIENTRYP qglUnlockArraysEXT) (void);
 #define qglTexGeni glTexGeni
 #define qglTexGeniv glTexGeniv
 #define qglTexImage1D glTexImage1D
-#ifdef VCMODS_OPENGLES
+#ifdef RPIMODS_OPENGLES
 #define qglTexImage2D myglTexImage2D
 #else
 #define qglTexImage2D glTexImage2D
@@ -425,7 +425,7 @@ extern void (APIENTRYP qglUnlockArraysEXT) (void);
 
 #endif
 
-#ifdef VCMODS_OPENGLES
+#ifdef RPIMODS_OPENGLES
 #define GL_BACK_LEFT 0x402
 #define GL_BACK_RIGHT 0x403
 #endif

@@ -175,7 +175,7 @@ void R_ImageList_f( void ) {
 		case 4:
 			ri.Printf( PRINT_ALL, "RGBA " );
 			break;
-#ifndef VCMODS_OPENGLES
+#ifndef RPIMODS_OPENGLES
 		case GL_RGBA8:
 			ri.Printf( PRINT_ALL, "RGBA8" );
 			break;
@@ -596,7 +596,7 @@ static void Upload32( unsigned *data,
 		{
 			if(r_greyscale->integer)
 			{
-#ifdef VCMODS_OPENGLES
+#ifdef RPIMODS_OPENGLES
             assert(r_texturebits->integer != 16 && r_texturebits->integer != 32);
 #else
 				if(r_texturebits->integer == 16)
@@ -611,7 +611,7 @@ static void Upload32( unsigned *data,
 			{
 				if ( glConfig.textureCompression == TC_S3TC_ARB )
 				{
-#ifdef VCMODS_OPENGLES
+#ifdef RPIMODS_OPENGLES
                assert(0);
 #else
 					internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
@@ -619,7 +619,7 @@ static void Upload32( unsigned *data,
 				}
 				else if ( glConfig.textureCompression == TC_S3TC )
 				{
-#ifdef VCMODS_OPENGLES
+#ifdef RPIMODS_OPENGLES
                assert(0);
 #else
 					internalFormat = GL_RGB4_S3TC;
@@ -627,7 +627,7 @@ static void Upload32( unsigned *data,
 				}
 				else if ( r_texturebits->integer == 16 )
 				{
-#ifdef VCMODS_OPENGLES
+#ifdef RPIMODS_OPENGLES
                assert(0);
 #else
 					internalFormat = GL_RGB5;
@@ -635,7 +635,7 @@ static void Upload32( unsigned *data,
 				}
 				else if ( r_texturebits->integer == 32 )
 				{
-#ifdef VCMODS_OPENGLES
+#ifdef RPIMODS_OPENGLES
                assert(0);
 #else
 					internalFormat = GL_RGB8;
@@ -651,7 +651,7 @@ static void Upload32( unsigned *data,
 		{
 			if(r_greyscale->integer)
 			{
-#ifdef VCMODS_OPENGLES
+#ifdef RPIMODS_OPENGLES
             assert(r_texturebits->integer != 16 && r_texturebits->integer != 32);
 #else
 				if(r_texturebits->integer == 16)
@@ -666,7 +666,7 @@ static void Upload32( unsigned *data,
 			{
 				if ( r_texturebits->integer == 16 )
 				{
-#ifdef VCMODS_OPENGLES
+#ifdef RPIMODS_OPENGLES
                assert(0);
 #else
 					internalFormat = GL_RGBA4;
@@ -674,7 +674,7 @@ static void Upload32( unsigned *data,
 				}
 				else if ( r_texturebits->integer == 32 )
 				{
-#ifdef VCMODS_OPENGLES
+#ifdef RPIMODS_OPENGLES
                assert(0);
 #else
 					internalFormat = GL_RGBA8;
@@ -754,7 +754,7 @@ done:
 
 	if (mipmap)
 	{
-#ifndef VCMODS_OPENGLES
+#ifndef RPIMODS_OPENGLES
 		if ( textureFilterAnisotropic )
 			qglTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT,
 					(GLint)Com_Clamp( 1, maxAnisotropy, r_ext_max_anisotropy->integer ) );
@@ -765,7 +765,7 @@ done:
 	}
 	else
 	{
-#ifndef VCMODS_OPENGLES
+#ifndef RPIMODS_OPENGLES
 		if ( textureFilterAnisotropic )
 			qglTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 1 );
 #endif
@@ -1005,7 +1005,7 @@ image_t	*R_FindImageFile( const char *name, qboolean mipmap, qboolean allowPicmi
 	if ( pic == NULL ) {
 		return NULL;
 	}
-#ifdef VCMODS_MISC
+#ifdef RPIMODS_MISC
    // force any texture containing the name "gothic" to be opaque
    if (strstr(name, "gothic")) {
       int i;
@@ -1148,7 +1148,7 @@ static void R_CreateFogImage( void ) {
 	borderColor[2] = 1.0;
 	borderColor[3] = 1;
 
-#ifndef VCMODS_OPENGLES
+#ifndef RPIMODS_OPENGLES
 	qglTexParameterfv( GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor );
 #endif
 }
