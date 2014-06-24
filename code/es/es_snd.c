@@ -43,7 +43,7 @@ SNDDMA_GetDMAPos
 */
 int SNDDMA_GetDMAPos(void)
 {
-   return 0;
+	return 0;
 }
 
 /*

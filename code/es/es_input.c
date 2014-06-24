@@ -41,21 +41,21 @@ static keyNum_t IN_TranslateWinToQ3Key( int vk )
 {
 	switch( vk )
 	{
-		case VK_LEFT:         return K_LEFTARROW;
-		case VK_RIGHT:        return K_RIGHTARROW;
-		case VK_DOWN:         return K_DOWNARROW;
-		case VK_UP:           return K_UPARROW;
-		case VK_RETURN:       return K_ENTER;
-      case VK_CONTROL:      
-         return K_CTRL;
-      case VK_SHIFT:
-         return K_SHIFT;
-      case VK_ESCAPE:
-         return K_ESCAPE;
+		case VK_LEFT:			 return K_LEFTARROW;
+		case VK_RIGHT:			 return K_RIGHTARROW;
+		case VK_DOWN:			 return K_DOWNARROW;
+		case VK_UP:				 return K_UPARROW;
+		case VK_RETURN:		 return K_ENTER;
+		case VK_CONTROL:		 
+			return K_CTRL;
+		case VK_SHIFT:
+			return K_SHIFT;
+		case VK_ESCAPE:
+			return K_ESCAPE;
 	}
 
-   if (vk >= 'A' && vk <= 'Z' || vk >= '0' && vk <= '9')
-      return vk;
+	if (vk >= 'A' && vk <= 'Z' || vk >= '0' && vk <= '9')
+		return vk;
 
 	return 0;
 }
@@ -74,11 +74,11 @@ LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 //
 //  COMMENTS:
 //
-//    This function and its usage are only necessary if you want this code
-//    to be compatible with Win32 systems prior to the 'RegisterClassEx'
-//    function that was added to Windows 95. It is important to call this function
-//    so that the application will get 'well formed' small icons associated
-//    with it.
+//		This function and its usage are only necessary if you want this code
+//		to be compatible with Win32 systems prior to the 'RegisterClassEx'
+//		function that was added to Windows 95. It is important to call this function
+//		so that the application will get 'well formed' small icons associated
+//		with it.
 //
 ATOM MyRegisterClass(HINSTANCE hInstance)
 {
@@ -108,28 +108,28 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 //
 //   COMMENTS:
 //
-//        In this function, we save the instance handle in a global variable and
-//        create and display the main program window.
+//			 In this function, we save the instance handle in a global variable and
+//			 create and display the main program window.
 //
 
 extern HINSTANCE g_hInstance;
 
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
-   HWND hWnd;
+	HWND hWnd;
 
-   hWnd = CreateWindow("Q3CLS", "Quake 3", WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, NULL, NULL, hInstance, NULL);
+	hWnd = CreateWindow("Q3CLS", "Quake 3", WS_OVERLAPPEDWINDOW,
+		CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, NULL, NULL, hInstance, NULL);
 
-   if (!hWnd)
-   {
-      return FALSE;
-   }
+	if (!hWnd)
+	{
+		return FALSE;
+	}
 
-   ShowWindow(hWnd, nCmdShow);
-   UpdateWindow(hWnd);
+	ShowWindow(hWnd, nCmdShow);
+	UpdateWindow(hWnd);
 
-   return TRUE;
+	return TRUE;
 }
 
 //
@@ -153,7 +153,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	switch (message)
 	{
 	case WM_COMMAND:
-		wmId    = LOWORD(wParam);
+		wmId	  = LOWORD(wParam);
 		wmEvent = HIWORD(wParam);
 		// Parse the menu selections:
 		switch (wmId)
@@ -174,9 +174,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		if( key )
 			Com_QueueEvent( 0, SE_KEY, key, qfalse, 0, NULL );
 		break;
-   case WM_CHAR:
+	case WM_CHAR:
 		Com_QueueEvent( 0, SE_CHAR, wParam, 0, 0, NULL );
-      break;
+		break;
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
 		// TODO: Add any drawing code here...
@@ -198,15 +198,15 @@ IN_ProcessEvents
 */
 static void IN_ProcessEvents( void )
 {
-   MSG msg;
+	MSG msg;
 
-   if (PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE)) {
-      if (!GetMessage(&msg, NULL, 0, 0))
-         Sys_Quit();
+	if (PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE)) {
+		if (!GetMessage(&msg, NULL, 0, 0))
+			Sys_Quit();
 
-      TranslateMessage(&msg);
-      DispatchMessage(&msg);
-   }
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
 }
 
 /*
@@ -217,7 +217,7 @@ IN_Init
 void IN_Init( void )
 {
 	MyRegisterClass(g_hInstance);
-   InitInstance (g_hInstance, SW_SHOW);
+	InitInstance (g_hInstance, SW_SHOW);
 }
 
 #else
@@ -227,7 +227,7 @@ void IN_Init( void )
 #include <stdio.h>
 #include <sys/select.h>
 
-#define NB_DISABLE 	0
+#define NB_DISABLE	0
 #define NB_ENABLE	1
 
 int kbhit( void )
@@ -272,16 +272,16 @@ IN_TranslateSDLToQ3Key
 */
 static keyNum_t IN_TranslateCharToQ3Key( char c )
 {
-   switch (c) {
-   case ';':         return K_LEFTARROW;
-   case '#':         return K_RIGHTARROW;
-   case '\'':        return K_DOWNARROW;
-   case '[':         return K_UPARROW;
-   case ']':         return K_CONSOLE;
-   case 10:          return K_ENTER;
-   }
+	switch (c) {
+	case ';':			return K_LEFTARROW;
+	case '#':			return K_RIGHTARROW;
+	case '\'':			return K_DOWNARROW;
+	case '[':			return K_UPARROW;
+	case ']':			return K_CONSOLE;
+	case 10:				return K_ENTER;
+	}
 
-   return c;
+	return c;
 }
 
 /*
