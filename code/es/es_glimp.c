@@ -450,20 +450,24 @@ of OpenGL
 */
 void GLimp_Init( void )
 {
-	qboolean success = qtrue;
-
 	Sys_GLimpInit( );
 
 	// create the window and set up the context
-	if( !GLimp_StartDriverAndSetMode( r_mode->integer, r_fullscreen->integer,
+	if( GLimp_StartDriverAndSetMode( r_mode->integer, r_fullscreen->integer,
 		(NativeWindowType)ri.Cvar_Get("vc_wnd", "0", CVAR_LATCH)->integer))
-	{
-		success = qfalse;
-	}
+	    goto success;
 
-	if( !success )
-		ri.Error( ERR_FATAL, "GLimp_Init() - could not load OpenGL subsystem\n" );
+	// Try again, this time in a platform specific "safe mode"
+	Sys_GLimpSafeInit( );
 
+	if( GLimp_StartDriverAndSetMode( r_mode->integer, r_fullscreen->integer,
+		(NativeWindowType)ri.Cvar_Get("vc_wnd", "0", CVAR_LATCH)->integer))
+	    goto success;
+
+	// Nothing worked, give up
+	ri.Error( ERR_FATAL, "GLimp_Init() - could not load OpenGL subsystem\n" );
+
+success:
 	// This values force the UI to disable driver selection
 	glConfig.driverType = GLDRV_ICD;
 	glConfig.hardwareType = GLHW_GENERIC;
