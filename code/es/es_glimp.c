@@ -243,7 +243,7 @@ static EGLConfig	  g_EGLConfig;
 static EGLContext   g_EGLContext;
 static EGLSurface   g_EGLWindowSurface;
 
-static qboolean GLimp_StartDriverAndSetMode( int mode, qboolean fullscreen, NativeWindowType hWnd )
+static qboolean GLimp_StartDriverAndSetMode( int mode, qboolean fullscreen, qboolean noborder, NativeWindowType hWnd )
 {
 	/* TODO cleanup on failure... */
 
@@ -453,14 +453,14 @@ void GLimp_Init( void )
 	Sys_GLimpInit( );
 
 	// create the window and set up the context
-	if( GLimp_StartDriverAndSetMode( r_mode->integer, r_fullscreen->integer,
+	if( GLimp_StartDriverAndSetMode( r_mode->integer, r_fullscreen->integer, r_noborder->integer,
 		(NativeWindowType)ri.Cvar_Get("vc_wnd", "0", CVAR_LATCH)->integer))
 	    goto success;
 
 	// Try again, this time in a platform specific "safe mode"
 	Sys_GLimpSafeInit( );
 
-	if( GLimp_StartDriverAndSetMode( r_mode->integer, r_fullscreen->integer,
+	if( GLimp_StartDriverAndSetMode( r_mode->integer, r_fullscreen->integer, qfalse,
 		(NativeWindowType)ri.Cvar_Get("vc_wnd", "0", CVAR_LATCH)->integer))
 	    goto success;
 
