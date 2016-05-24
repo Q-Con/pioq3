@@ -281,10 +281,6 @@ Sys_Print
 */
 void Sys_Print( const char *msg )
 {
-#if defined(RPIMODS_MISC)&&defined(_WIN32)
-   OutputDebugString(msg);
-#endif
-
 	CON_LogWrite( msg );
 	CON_Print( msg );
 }
