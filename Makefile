@@ -1465,19 +1465,6 @@ Q3OBJ = \
              $(B)/client/es_input.o, \
              $(B)/client/sdl_input.o)
 
-#
-#ifeq ($(ARCH),arm)
-#  Q3OBJ += \
-#    $(B)/client/es_gamma.o \
-#    $(B)/client/es_input.o \
-#    $(B)/client/es_snd.o 
-#else
-#  Q3OBJ += \
-#    $(B)/client/sdl_gamma.o \
-#    $(B)/client/sdl_input.o \
-#    $(B)/client/sdl_snd.o 
-#endif
-
 ifeq ($(ARCH),i386)
   Q3OBJ += \
     $(B)/client/snd_mixa.o \
@@ -1592,15 +1579,6 @@ endif
   Q3POBJ += $(if $(or $(findstring arm,$(ARCH)), $(USBDK)), \
               $(B)/client/es_glimp.o $(B)/client/etc1encode.o, \
               $(B)/client/sdl_glimp.o)
-
-#ifeq ($(ARCH),arm)
-#  Q3POBJ += \
-#    $(B)/client/es_glimp.o \
-#    $(B)/client/etc1encode.o
-#else
-#  Q3POBJ += \
-#    $(B)/client/sdl_glimp.o
-#endif
 
 Q3POBJ_SMP += \
   $(B)/clientsmp/sdl_glimp.o
