@@ -25,14 +25,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #ifndef __QGL_H__
 #define __QGL_H__
-/*
-#ifdef RPIMODS_NOSDL
-#include <GLES/gl.h>
-*/
 
 #ifdef RPIMODS_OPENGLES
 #include <GLES/gl.h>
-
 
 #define qglActiveTextureARB glActiveTexture
 #define qglClientActiveTextureARB glClientActiveTexture

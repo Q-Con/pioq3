@@ -502,18 +502,6 @@ void Sys_SigHandler( int signal )
 	Sys_Exit( 0 ); // Exit with 0 to avoid recursive signals
 }
 
-#if 0
-void Sys_SigAction(int sig, siginfo_t *info, void *v)
-{
-	ucontext_t *uc = (ucontext_t *)v;
-
-	fprintf(stderr, "arm_pc = 0x%08x\n", uc->uc_mcontext.arm_pc);
-	fprintf(stderr, "arm_lr = 0x%08x\n", uc->uc_mcontext.arm_lr);
-
-	Sys_SigHandler(sig);
-}
-#endif
-
 /*
 =================
 main
@@ -585,16 +573,6 @@ int main( int argc, char **argv )
 	signal( SIGSEGV, Sys_SigHandler );
 	signal( SIGTERM, Sys_SigHandler );
 
-#if 0
-		struct sigaction action;
-
-		memset(&action, 0, sizeof(action));
-
-		action.sa_sigaction = Sys_SigAction;
-		action.sa_flags = SA_SIGINFO;
-
-		sigaction(SIGFPE, &action, NULL);
-#endif
 	while( 1 )
 	{
 #ifndef DEDICATED
