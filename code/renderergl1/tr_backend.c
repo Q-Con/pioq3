@@ -20,6 +20,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
 #include "tr_local.h"
+#include "qgl.h"
 
 backEndData_t	*backEndData;
 backEndState_t	backEnd;
@@ -73,17 +74,17 @@ void GL_SelectTexture( int unit )
 
 	if ( unit == 0 )
 	{
-		qglActiveTextureARB( GL_TEXTURE0_ARB );
-		GLimp_LogComment( "glActiveTextureARB( GL_TEXTURE0_ARB )\n" );
-		qglClientActiveTextureARB( GL_TEXTURE0_ARB );
-		GLimp_LogComment( "glClientActiveTextureARB( GL_TEXTURE0_ARB )\n" );
+		qglActiveTextureARB( GL_TEXTURE0 );
+		GLimp_LogComment( "glActiveTexture( GL_TEXTURE0 )\n" );
+		qglClientActiveTextureARB( GL_TEXTURE0 );
+		GLimp_LogComment( "glClientActiveTexture( GL_TEXTURE0 )\n" );
 	}
 	else if ( unit == 1 )
 	{
-		qglActiveTextureARB( GL_TEXTURE1_ARB );
-		GLimp_LogComment( "glActiveTextureARB( GL_TEXTURE1_ARB )\n" );
-		qglClientActiveTextureARB( GL_TEXTURE1_ARB );
-		GLimp_LogComment( "glClientActiveTextureARB( GL_TEXTURE1_ARB )\n" );
+		qglActiveTextureARB( GL_TEXTURE1 );
+		GLimp_LogComment( "glActiveTexture( GL_TEXTURE1 )\n" );
+		qglClientActiveTextureARB( GL_TEXTURE1 );
+		GLimp_LogComment( "glClientActiveTextureARB( GL_TEXTURE1 )\n" );
 	} else {
 		ri.Error( ERR_DROP, "GL_SelectTexture: unit = %i", unit );
 	}
@@ -311,21 +312,6 @@ void GL_State( unsigned long stateBits )
 	}
 
 	//
-	// fill/line mode
-	//
-	if ( diff & GLS_POLYMODE_LINE )
-	{
-		if ( stateBits & GLS_POLYMODE_LINE )
-		{
-			qglPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-		}
-		else
-		{
-			qglPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-		}
-	}
-
-	//
 	// depthtest
 	//
 	if ( diff & GLS_DEPTHTEST_DISABLE )
@@ -454,7 +440,7 @@ void RB_BeginDrawingView (void) {
 		qglClearColor( 0.0f, 0.0f, 0.0f, 1.0f );	// FIXME: get color of sky
 #endif
 	}
-	qglClear( clearBits );
+        qglClear( clearBits | GL_COLOR_BUFFER_BIT);
 
 	if ( ( backEnd.refdef.rdflags & RDF_HYPERSPACE ) )
 	{
@@ -474,7 +460,7 @@ void RB_BeginDrawingView (void) {
 	// clip to the plane of the portal
 	if ( backEnd.viewParms.isPortal ) {
 		float	plane[4];
-		GLdouble	plane2[4];
+		float	plane2[4];
 
 		plane[0] = backEnd.viewParms.portalPlane.normal[0];
 		plane[1] = backEnd.viewParms.portalPlane.normal[1];
@@ -628,7 +614,7 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 					}
 
 					if(!oldDepthRange)
-						qglDepthRange (0, 0.3);
+						qglDepthRange (0, 0.3f);
 				}
 				else
 				{
@@ -639,7 +625,7 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 						qglMatrixMode(GL_MODELVIEW);
 					}
 
-					qglDepthRange (0, 1);
+					qglDepthRange (0, 1.0f);
 				}
 
 				oldDepthRange = depthRange;
@@ -663,7 +649,7 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 	// go back to the world modelview matrix
 	qglLoadMatrixf( backEnd.viewParms.world.modelMatrix );
 	if ( depthRange ) {
-		qglDepthRange (0, 1);
+		qglDepthRange (0, 1.0f);
 	}
 
 	if (r_drawSun->integer) {
@@ -700,7 +686,7 @@ void	RB_SetGL2D (void) {
 	qglScissor( 0, 0, glConfig.vidWidth, glConfig.vidHeight );
 	qglMatrixMode(GL_PROJECTION);
     qglLoadIdentity ();
-	qglOrtho (0, glConfig.vidWidth, glConfig.vidHeight, 0, 0, 1);
+	qglOrtho (0.0f, glConfig.vidWidth, glConfig.vidHeight, 0.0f, 0.0f, 1.0f);
 	qglMatrixMode(GL_MODELVIEW);
     qglLoadIdentity ();
 
@@ -729,6 +715,9 @@ Used for cinematics.
 void RE_StretchRaw (int x, int y, int w, int h, int cols, int rows, const byte *data, int client, qboolean dirty) {
 	int			i, j;
 	int			start, end;
+	vec2_t			texcoords[4];
+	vec2_t			verts[4];
+	glIndex_t		indicies[6] = {0, 1, 2, 0, 3, 2};
 
 	if ( !tr.registered ) {
 		return;
@@ -762,7 +751,9 @@ void RE_StretchRaw (int x, int y, int w, int h, int cols, int rows, const byte *
 	if ( cols != tr.scratchImage[client]->width || rows != tr.scratchImage[client]->height ) {
 		tr.scratchImage[client]->width = tr.scratchImage[client]->uploadWidth = cols;
 		tr.scratchImage[client]->height = tr.scratchImage[client]->uploadHeight = rows;
-		qglTexImage2D( GL_TEXTURE_2D, 0, GL_RGB8, cols, rows, 0, GL_RGBA, GL_UNSIGNED_BYTE, data );
+		// don't do qglTexImage2D as this may end up doing a compressed image
+		// on which we are not allowed to do further sub images
+		glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, cols, rows, 0, GL_RGBA, GL_UNSIGNED_BYTE, data );
 		qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 		qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 		qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
@@ -782,18 +773,23 @@ void RE_StretchRaw (int x, int y, int w, int h, int cols, int rows, const byte *
 
 	RB_SetGL2D();
 
-	qglColor3f( tr.identityLight, tr.identityLight, tr.identityLight );
+	qglColor4f( tr.identityLight, tr.identityLight, tr.identityLight, 1.0f );
 
-	qglBegin (GL_QUADS);
-	qglTexCoord2f ( 0.5f / cols,  0.5f / rows );
-	qglVertex2f (x, y);
-	qglTexCoord2f ( ( cols - 0.5f ) / cols ,  0.5f / rows );
-	qglVertex2f (x+w, y);
-	qglTexCoord2f ( ( cols - 0.5f ) / cols, ( rows - 0.5f ) / rows );
-	qglVertex2f (x+w, y+h);
-	qglTexCoord2f ( 0.5f / cols, ( rows - 0.5f ) / rows );
-	qglVertex2f (x, y+h);
-	qglEnd ();
+	verts[0][0] = x;  verts[0][1] = y;
+	verts[1][0] = x+w;  verts[1][1] = y;
+	verts[2][0] = x+w;  verts[2][1] = y+h;
+	verts[3][0] = x;  verts[3][1] = y+h;
+	
+	texcoords[0][0] = 0.5f/cols;      texcoords[0][1] = 0.5f/rows;
+	texcoords[1][0] = (cols-0.5f)/cols;   texcoords[1][1] = 0.5f/rows;
+	texcoords[2][0] = (cols-0.5f)/cols;   texcoords[2][1] = (rows-0.5f)/rows;
+	texcoords[3][0] = 0.5f/cols;      texcoords[3][1] = (rows-0.5f)/rows;
+	
+	qglEnableClientState( GL_TEXTURE_COORD_ARRAY );
+	qglTexCoordPointer( 2, GL_FLOAT, 0, texcoords );
+	qglVertexPointer  ( 2, GL_FLOAT, 0, verts );
+	qglDrawElements( GL_TRIANGLE_STRIP, 6, GL_INDEX_TYPE, indicies );
+	qglDisableClientState( GL_TEXTURE_COORD_ARRAY );
 }
 
 void RE_UploadCinematic (int w, int h, int cols, int rows, const byte *data, int client, qboolean dirty) {
@@ -804,7 +800,7 @@ void RE_UploadCinematic (int w, int h, int cols, int rows, const byte *data, int
 	if ( cols != tr.scratchImage[client]->width || rows != tr.scratchImage[client]->height ) {
 		tr.scratchImage[client]->width = tr.scratchImage[client]->uploadWidth = cols;
 		tr.scratchImage[client]->height = tr.scratchImage[client]->uploadHeight = rows;
-		qglTexImage2D( GL_TEXTURE_2D, 0, GL_RGB8, cols, rows, 0, GL_RGBA, GL_UNSIGNED_BYTE, data );
+		qglTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, cols, rows, 0, GL_RGBA, GL_UNSIGNED_BYTE, data );
 		qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 		qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 		qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
@@ -976,6 +972,9 @@ void RB_ShowImages( void ) {
 	image_t	*image;
 	float	x, y, w, h;
 	int		start, end;
+	vec2_t  texcoords[4] = { {0.0f, 0.0f}, {1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f} };
+	vec2_t  verts[4];
+	glIndex_t indicies[6] = { 0, 1, 2, 0, 3, 2};
 
 	if ( !backEnd.projection2D ) {
 		RB_SetGL2D();
@@ -986,6 +985,7 @@ void RB_ShowImages( void ) {
 	qglFinish();
 
 	start = ri.Milliseconds();
+	qglEnableClientState( GL_TEXTURE_COORD_ARRAY );
 
 	for ( i=0 ; i<tr.numImages ; i++ ) {
 		image = tr.images[i];
@@ -1001,19 +1001,17 @@ void RB_ShowImages( void ) {
 			h *= image->uploadHeight / 512.0f;
 		}
 
-		GL_Bind( image );
-		qglBegin (GL_QUADS);
-		qglTexCoord2f( 0, 0 );
-		qglVertex2f( x, y );
-		qglTexCoord2f( 1, 0 );
-		qglVertex2f( x + w, y );
-		qglTexCoord2f( 1, 1 );
-		qglVertex2f( x + w, y + h );
-		qglTexCoord2f( 0, 1 );
-		qglVertex2f( x, y + h );
-		qglEnd();
+		verts[0][0] = x;  verts[0][1] = y;
+		verts[1][0] = x+w;  verts[1][1] = y;
+		verts[2][0] = x+w;  verts[2][1] = y+h;
+		verts[3][0] = x;  verts[3][1] = y+h;
+		
+		qglTexCoordPointer( 2, GL_FLOAT, 0, texcoords );
+		qglVertexPointer  ( 2, GL_FLOAT, 0, verts );
+		qglDrawElements( GL_TRIANGLE_STRIP, 6, GL_INDEX_TYPE, indicies );
 	}
 
+	qglDisableClientState( GL_TEXTURE_COORD_ARRAY );
 	qglFinish();
 
 	end = ri.Milliseconds();
@@ -1087,7 +1085,6 @@ const void	*RB_SwapBuffers( const void *data ) {
 		unsigned char *stencilReadback;
 
 		stencilReadback = ri.Hunk_AllocateTempMemory( glConfig.vidWidth * glConfig.vidHeight );
-		qglReadPixels( 0, 0, glConfig.vidWidth, glConfig.vidHeight, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, stencilReadback );
 
 		for ( i = 0; i < glConfig.vidWidth * glConfig.vidHeight; i++ ) {
 			sum += stencilReadback[i];
@@ -1097,10 +1094,6 @@ const void	*RB_SwapBuffers( const void *data ) {
 		ri.Hunk_FreeTempMemory( stencilReadback );
 	}
 
-
-	if ( !glState.finishCalled ) {
-		qglFinish();
-	}
 
 	GLimp_LogComment( "***************** RB_SwapBuffers *****************\n\n\n" );
 

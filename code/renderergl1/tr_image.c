@@ -180,11 +180,6 @@ void R_ImageList_f( void ) {
 				format = "LATC ";
 				// 128 bits per 16 pixels, so 1 byte per pixel
 				break;
-			case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
-				format = "DXT1 ";
-				// 64 bits per 16 pixels, so 4 bits per pixel
-				estSize /= 2;
-				break;
 			case GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:
 				format = "DXT5 ";
 				// 128 bits per 16 pixels, so 1 byte per pixel
@@ -193,13 +188,6 @@ void R_ImageList_f( void ) {
 				format = "BPTC ";
 				// 128 bits per 16 pixels, so 1 byte per pixel
 				break;
-			case GL_RGB4_S3TC:
-				format = "S3TC ";
-				// same as DXT1?
-				estSize /= 2;
-				break;
-			case GL_RGBA4:
-			case GL_RGBA8:
 			case GL_RGBA:
 				format = "RGBA ";
 				// 4 bytes per pixel
@@ -211,8 +199,6 @@ void R_ImageList_f( void ) {
 				format = "L    ";
 				// 1 byte per pixel?
 				break;
-			case GL_RGB5:
-			case GL_RGB8:
 			case GL_RGB:
 				format = "RGB  ";
 				// 3 bytes per pixel?
@@ -684,30 +670,26 @@ static void Upload32( unsigned *data,
 		{
 			if(r_greyscale->integer)
 			{
-				if(r_texturebits->integer == 16)
-					internalFormat = GL_LUMINANCE8;
-				else if(r_texturebits->integer == 32)
-					internalFormat = GL_LUMINANCE16;
-				else
-					internalFormat = GL_LUMINANCE;
+                                assert(r_texturebits->integer != 16 && r_texturebits->integer != 32);
+				internalFormat = GL_LUMINANCE;
 			}
 			else
 			{
 				if ( allowCompression && glConfig.textureCompression == TC_S3TC_ARB )
 				{
-					internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
+                                        assert(0);
 				}
 				else if ( allowCompression && glConfig.textureCompression == TC_S3TC )
 				{
-					internalFormat = GL_RGB4_S3TC;
+                                        assert(0);
 				}
 				else if ( r_texturebits->integer == 16 )
 				{
-					internalFormat = GL_RGB5;
+                                        assert(0);
 				}
 				else if ( r_texturebits->integer == 32 )
 				{
-					internalFormat = GL_RGB8;
+                                        assert(0);
 				}
 				else
 				{
@@ -719,22 +701,18 @@ static void Upload32( unsigned *data,
 		{
 			if(r_greyscale->integer)
 			{
-				if(r_texturebits->integer == 16)
-					internalFormat = GL_LUMINANCE8_ALPHA8;
-				else if(r_texturebits->integer == 32)
-					internalFormat = GL_LUMINANCE16_ALPHA16;
-				else
-					internalFormat = GL_LUMINANCE_ALPHA;
+                                assert(r_texturebits->integer != 16 && r_texturebits->integer != 32);
+				internalFormat = GL_LUMINANCE_ALPHA;
 			}
 			else
 			{
 				if ( r_texturebits->integer == 16 )
 				{
-					internalFormat = GL_RGBA4;
+                                        assert(0);
 				}
 				else if ( r_texturebits->integer == 32 )
 				{
-					internalFormat = GL_RGBA8;
+                                        assert(0);
 				}
 				else
 				{
@@ -810,18 +788,11 @@ done:
 
 	if (mipmap)
 	{
-		if ( textureFilterAnisotropic )
-			qglTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT,
-					(GLint)Com_Clamp( 1, maxAnisotropy, r_ext_max_anisotropy->integer ) );
-
 		qglTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min);
 		qglTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 	}
 	else
 	{
-		if ( textureFilterAnisotropic )
-			qglTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 1 );
-
 		qglTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 		qglTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 	}
@@ -1185,6 +1156,7 @@ static void R_CreateFogImage( void ) {
 	}
 	tr.fogImage = R_CreateImage("*fog", (byte *)data, FOG_S, FOG_T, IMGTYPE_COLORALPHA, IMGFLAG_CLAMPTOEDGE, 0 );
 	ri.Hunk_FreeTempMemory( data );
+        // Watch this space
 }
 
 /*

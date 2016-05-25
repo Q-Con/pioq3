@@ -26,18 +26,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #ifndef __QGL_H__
 #define __QGL_H__
 
-#ifdef USE_LOCAL_HEADERS
-#	include "SDL_opengl.h"
-#else
-#	include <SDL_opengl.h>
-#endif
+#include <GLES/gl.h>
 
-extern void (APIENTRYP qglActiveTextureARB) (GLenum texture);
-extern void (APIENTRYP qglClientActiveTextureARB) (GLenum texture);
-extern void (APIENTRYP qglMultiTexCoord2fARB) (GLenum target, GLfloat s, GLfloat t);
+#define qglActiveTextureARB glActiveTexture
+#define qglClientActiveTextureARB glClientActiveTexture
+#define qglMultiTexCoord2fARB glMultiTexCoord2f
 
-extern void (APIENTRYP qglLockArraysEXT) (GLint first, GLsizei count);
-extern void (APIENTRYP qglUnlockArraysEXT) (void);
+extern void (* qglLockArraysEXT) (GLint first, GLsizei count);
+extern void (* qglUnlockArraysEXT) (void);
+
+extern void myglClear(GLbitfield mask);
+extern void myglTexImage2D (GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const GLvoid *pixels);
+extern void myglDrawBuffer(GLenum mode);
+extern void myglViewport(GLint x, GLint y, GLsizei width, GLsizei height);
+extern void myglScissor(GLint x, GLint y, GLsizei width, GLsizei height);
 
 
 //===========================================================================
@@ -55,10 +57,10 @@ extern void (APIENTRYP qglUnlockArraysEXT) (void);
 #define qglClear glClear
 #define qglClearAccum glClearAccum
 #define qglClearColor glClearColor
-#define qglClearDepth glClearDepth
+#define qglClearDepth glClearDepthf
 #define qglClearIndex glClearIndex
 #define qglClearStencil glClearStencil
-#define qglClipPlane glClipPlane
+#define qglClipPlane glClipPlanef
 #define qglColor3b glColor3b
 #define qglColor3bv glColor3bv
 #define qglColor3d glColor3d
@@ -104,11 +106,11 @@ extern void (APIENTRYP qglUnlockArraysEXT) (void);
 #define qglDeleteTextures glDeleteTextures
 #define qglDepthFunc glDepthFunc
 #define qglDepthMask glDepthMask
-#define qglDepthRange glDepthRange
+#define qglDepthRange glDepthRangef
 #define qglDisable glDisable
 #define qglDisableClientState glDisableClientState
 #define qglDrawArrays glDrawArrays
-#define qglDrawBuffer glDrawBuffer
+#define qglDrawBuffer myglDrawBuffer
 #define qglDrawElements glDrawElements
 #define qglDrawPixels glDrawPixels
 #define qglEdgeFlag glEdgeFlag
@@ -229,7 +231,7 @@ extern void (APIENTRYP qglUnlockArraysEXT) (void);
 #define qglNormal3s glNormal3s
 #define qglNormal3sv glNormal3sv
 #define qglNormalPointer glNormalPointer
-#define qglOrtho glOrtho
+#define qglOrtho glOrthof
 #define qglPassThrough glPassThrough
 #define qglPixelMapfv glPixelMapfv
 #define qglPixelMapuiv glPixelMapuiv
@@ -291,7 +293,7 @@ extern void (APIENTRYP qglUnlockArraysEXT) (void);
 #define qglRotatef glRotatef
 #define qglScaled glScaled
 #define qglScalef glScalef
-#define qglScissor glScissor
+#define qglScissor myglScissor
 #define qglSelectBuffer glSelectBuffer
 #define qglShadeModel glShadeModel
 #define qglStencilFunc glStencilFunc
@@ -341,7 +343,7 @@ extern void (APIENTRYP qglUnlockArraysEXT) (void);
 #define qglTexGeni glTexGeni
 #define qglTexGeniv glTexGeniv
 #define qglTexImage1D glTexImage1D
-#define qglTexImage2D glTexImage2D
+#define qglTexImage2D myglTexImage2D
 #define qglTexParameterf glTexParameterf
 #define qglTexParameterfv glTexParameterfv
 #define qglTexParameteri glTexParameteri
@@ -375,7 +377,10 @@ extern void (APIENTRYP qglUnlockArraysEXT) (void);
 #define qglVertex4s glVertex4s
 #define qglVertex4sv glVertex4sv
 #define qglVertexPointer glVertexPointer
-#define qglViewport glViewport
+#define qglViewport myglViewport
+
+#define GL_BACK_LEFT 0x402
+#define GL_BACK_RIGHT 0x403
 
 // GL_EXT_draw_range_elements
 extern void     (APIENTRY * qglDrawRangeElementsEXT) (GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const GLvoid *indices);
