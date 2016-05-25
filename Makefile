@@ -330,8 +330,9 @@ ifneq (,$(findstring "$(PLATFORM)", "linux" "gnu_kfreebsd" "kfreebsd-gnu"))
   ifeq ($(ARCH),arm)
     #BASE_CFLAGS += -mfpu=vfp -mfloat-abi=softfp
     #-O4 -mfpu=neon -mcpu=native -mtune=native -mfloat-abi=hard -funsafe-math-optimizations
-    OPTIMIZE += -funsafe-math-optimizations
-    BASE_CFLAGS += -mfpu=vfp -mfloat-abi=hard
+    OPTIMIZEVM += -mcpu=native -mtune=native
+    OPTIMIZE = $(OPTIMIZEVM) -ffast-math -funsafe-math-optimizations
+    BASE_CFLAGS += -mfpu=neon-vfpv4 -mfloat-abi=hard
   endif
   endif
   endif

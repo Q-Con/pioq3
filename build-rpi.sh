@@ -16,7 +16,7 @@ BASEQ3_DIR="/home/${USER}/"
 INCLUDES="-I/opt/vc/include -I/opt/vc/include/interface/vcos/pthreads"
 
 # prefix of arm cross compiler installed
-#CROSS_COMPILE=bcm2708-
+CROSS_COMPILE=arm-linux-gnueabihf-
 
 # clean
 if [ $# -ge 1 ] && [ $1 = clean ]; then
