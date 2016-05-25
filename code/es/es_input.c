@@ -211,6 +211,20 @@ static void IN_ProcessEvents( void )
 
 /*
 ===============
+IN_InitKeyLockStates
+===============
+*/
+void IN_InitKeyLockStates( void )
+{
+        unsigned char *keystate = SDL_GetKeyState(NULL);
+
+        keys[K_SCROLLOCK].down = keystate[SDLK_SCROLLOCK];
+        keys[K_KP_NUMLOCK].down = keystate[SDLK_NUMLOCK];
+        keys[K_CAPSLOCK].down = keystate[SDLK_CAPSLOCK];
+}
+
+/*
+===============
 IN_Init
 ===============
 */
