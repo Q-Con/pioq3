@@ -225,6 +225,17 @@ void GLimp_Shutdown( void )
 
 /*
 ===============
+GLimp_Minimize
+===============
+*/
+void GLimp_Minimize(void)
+{
+}
+
+
+
+/*
+===============
 GLimp_LogComment
 ===============
 */
