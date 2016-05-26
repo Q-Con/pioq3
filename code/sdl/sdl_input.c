@@ -20,7 +20,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
 
-#include "../renderer/tr_local.h"
 #include "../client/client.h"
 #include "../sys/sys_local.h"
 
@@ -39,6 +38,7 @@ IN_TranslateSDLToQ3Key
 */
 static keyNum_t IN_TranslateWinToQ3Key( int vk )
 {
+        // Possibly add more definitions - f478761
 	switch( vk )
 	{
 		case VK_LEFT:			 return K_LEFTARROW;
