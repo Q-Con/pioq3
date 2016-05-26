@@ -37,7 +37,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 
-#include "../renderergl1/tr_local.h"
+#include "../renderercommon/tr_common.h"
 #include "../sys/sys_local.h"
 
 typedef enum
@@ -270,7 +270,7 @@ static qboolean GLimp_StartDriverAndSetMode( int mode, qboolean fullscreen, qboo
         {
 		const char *driverName;
 
-                if (SDL_Init(SDL_INIT_VIDEO) == -1)
+		if (SDL_Init(SDL_INIT_VIDEO) != 0)
                 {
 			ri.Printf( PRINT_ALL, "SDL_Init( SDL_INIT_VIDEO ) FAILED (%s)\n", SDL_GetError());
                         return qfalse;
@@ -335,6 +335,7 @@ static qboolean GLimp_StartDriverAndSetMode( int mode, qboolean fullscreen, qboo
                 return qfalse;
         }
 
+        // Might want to disable this, don't know yet - 58b8cfa
         eglMakeCurrent(g_EGLDisplay, g_EGLWindowSurface, g_EGLWindowSurface, g_EGLContext);
 
         {
@@ -470,8 +471,7 @@ success:
         // This values force the UI to disable driver selection
         glConfig.driverType = GLDRV_ICD;
         glConfig.hardwareType = GLHW_GENERIC;
-	// FIXME No SDL_SetGamma in SDL2?
-        /*glConfig.deviceSupportsGamma = qfalse;*/
+        glConfig.deviceSupportsGamma = qfalse;
 
         // get our config strings
         Q_strncpyz( glConfig.vendor_string, (char *) qglGetString (GL_VENDOR), sizeof( glConfig.vendor_string ) );
