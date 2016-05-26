@@ -23,8 +23,6 @@
 #include "../renderercommon/tr_common.h"
 #include "../qcommon/qcommon.h"
 
-extern SDL_Window *SDL_window;
-
 /*
  * =================
  * GLimp_SetGamma
