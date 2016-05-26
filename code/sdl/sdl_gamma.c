@@ -20,8 +20,10 @@
  * ===========================================================================
  * */
 
-#include "../renderergl1/tr_local.h"
+#include "../renderercommon/tr_common.h"
 #include "../qcommon/qcommon.h"
+
+extern SDL_Window *SDL_window;
 
 /*
  * =================
