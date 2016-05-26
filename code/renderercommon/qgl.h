@@ -399,6 +399,12 @@ extern void     (APIENTRY * qglMultiDrawElementsEXT) (GLenum mode, const GLsizei
 #define GL_SHADING_LANGUAGE_VERSION_ARB 0x8B8C
 #endif
 
+// GLES shit
+#define GLsizeiptrARB GLsizeiptr
+#define GLintptrARB GLintptr
+#define GLhandleARB khronos_uint32_t
+#define GLcharARB GLchar
+
 // GL_ARB_vertex_program
 extern void     (APIENTRY * qglVertexAttrib4fARB) (GLuint, GLfloat, GLfloat, GLfloat, GLfloat);
 extern void     (APIENTRY * qglVertexAttrib4fvARB) (GLuint, const GLfloat *);
