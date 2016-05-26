@@ -280,8 +280,8 @@ static qboolean GLimp_StartDriverAndSetMode( int mode, qboolean fullscreen, qboo
                 ri.Printf( PRINT_ALL, "SDL using driver \"%s\"\n", driverName );
                 Cvar_Set( "r_sdlDriver", driverName );
 
-                if (!SDL_SetVideoMode(32, 32, 0, 0)) {
-                        ri.Printf(PRINT_ALL, "SDL_SetVideoMode() failed (%s)\n", SDL_GetError());
+                if (!SDL_CreateWindow("", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 32, 32, 0)) {
+                        ri.Printf(PRINT_ALL, "SDL_CreateWindow() failed (%s)\n", SDL_GetError());
                         return qfalse;
                 }
         }
