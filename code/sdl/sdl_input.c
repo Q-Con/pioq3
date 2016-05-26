@@ -50,8 +50,6 @@ static cvar_t *in_joystickUseAnalog = NULL;
 
 static int vidRestartTime = 0;
 
-static SDL_Window *SDL_window = NULL;
-
 #define CTRL(a) ((a)-'a'+1)
 
 /*
@@ -932,7 +930,7 @@ void IN_Frame( void )
 IN_Init
 ===============
 */
-void IN_Init( void *windowData )
+void IN_Init( void )
 {
 	int appState;
 
@@ -941,8 +939,6 @@ void IN_Init( void *windowData )
 		Com_Error( ERR_FATAL, "IN_Init called before SDL_Init( SDL_INIT_VIDEO )" );
 		return;
 	}
-
-	SDL_window = (SDL_Window *)windowData;
 
 	Com_DPrintf( "\n------- Input Initialization -------\n" );
 
@@ -993,5 +989,5 @@ IN_Restart
 void IN_Restart( void )
 {
 	IN_ShutdownJoystick( );
-	IN_Init( SDL_window );
+	IN_Init( );
 }
