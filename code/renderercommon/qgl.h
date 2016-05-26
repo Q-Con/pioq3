@@ -26,7 +26,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #ifndef __QGL_H__
 #define __QGL_H__
 
-#include <GLES/gl.h>
+#ifdef USE_LOCAL_HEADERS
+#      include "SDL_opengles.h"
+#else
+#      include <SDL_opengles.h>
+#endif
 
 #define qglActiveTextureARB glActiveTexture
 #define qglClientActiveTextureARB glClientActiveTexture
