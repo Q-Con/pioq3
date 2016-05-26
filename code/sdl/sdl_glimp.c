@@ -38,7 +38,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <EGL/eglext.h>
 
 #include "../renderergl1/tr_local.h"
-#include "../client/client.h"
 #include "../sys/sys_local.h"
 
 typedef enum
@@ -269,16 +268,15 @@ static qboolean GLimp_StartDriverAndSetMode( int mode, qboolean fullscreen, qboo
 #ifndef RPIMODS_NOSDL
         if (!SDL_WasInit(SDL_INIT_VIDEO))
         {
-                char driverName[ 64 ];
+		const char *driverName;
 
                 if (SDL_Init(SDL_INIT_VIDEO) == -1)
                 {
-                        ri.Printf( PRINT_ALL, "SDL_Init( SDL_INIT_VIDEO ) FAILED (%s)\n",
-                                        SDL_GetError());
+			ri.Printf( PRINT_ALL, "SDL_Init( SDL_INIT_VIDEO ) FAILED (%s)\n", SDL_GetError());
                         return qfalse;
                 }
 
-                SDL_VideoDriverName( driverName, sizeof( driverName ) );
+		driverName = SDL_GetCurrentVideoDriver( );
                 ri.Printf( PRINT_ALL, "SDL using driver \"%s\"\n", driverName );
                 Cvar_Set( "r_sdlDriver", driverName );
 
@@ -450,6 +448,7 @@ of OpenGL
 */
 void GLimp_Init( void )
 {
+	ri.Printf( PRINT_DEVELOPER, "Glimp_Init( )\n" );
         Sys_GLimpInit( );
 
         // create the window and set up the context
@@ -471,7 +470,8 @@ success:
         // This values force the UI to disable driver selection
         glConfig.driverType = GLDRV_ICD;
         glConfig.hardwareType = GLHW_GENERIC;
-        glConfig.deviceSupportsGamma = qfalse;
+	// FIXME No SDL_SetGamma in SDL2?
+        /*glConfig.deviceSupportsGamma = qfalse;*/
 
         // get our config strings
         Q_strncpyz( glConfig.vendor_string, (char *) qglGetString (GL_VENDOR), sizeof( glConfig.vendor_string ) );
@@ -487,7 +487,7 @@ success:
         ri.Cvar_Get( "r_availableModes", "", CVAR_ROM );
 
         // This depends on SDL_INIT_VIDEO, hence having it here
-        IN_Init( );
+        ri.IN_Init( );
 }
 
 
@@ -504,6 +504,7 @@ int mod = 0;
 
 void GLimp_EndFrame( void )
 {
+	// Watch this space - f478761
         eglSwapBuffers(g_EGLDisplay, g_EGLWindowSurface);
         firstclear = 1;
 /*
