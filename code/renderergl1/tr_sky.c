@@ -385,7 +385,7 @@ static void DrawSkySide( struct image_s *image, const int mins[2], const int max
         qglTexCoordPointer( 2, GL_FLOAT, 0, s_skyTexCoords );
         qglVertexPointer  ( 3, GL_FLOAT, 0, s_skyPoints );
         qglDrawElements( GL_TRIANGLE_STRIP, i, GL_INDEX_TYPE, indicies );
-        Hunk_FreeTempMemory(indicies);
+        ri.Hunk_FreeTempMemory(indicies);
 }
 
 static void DrawSkyBox( shader_t *shader )

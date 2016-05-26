@@ -289,7 +289,7 @@ static qboolean GLimp_StartDriverAndSetMode( int mode, qboolean fullscreen, qboo
 
 		driverName = SDL_GetCurrentVideoDriver( );
                 ri.Printf( PRINT_ALL, "SDL using driver \"%s\"\n", driverName );
-                Cvar_Set( "r_sdlDriver", driverName );
+                ri.Cvar_Set( "r_sdlDriver", driverName );
 
                 if (!SDL_CreateWindow("", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 32, 32, 0)) {
                         ri.Printf(PRINT_ALL, "SDL_CreateWindow() failed (%s)\n", SDL_GetError());
@@ -461,7 +461,7 @@ of OpenGL
 void GLimp_Init( void )
 {
 	ri.Printf( PRINT_DEVELOPER, "Glimp_Init( )\n" );
-        Sys_GLimpInit( );
+        ri.Sys_GLimpInit( );
 
         // create the window and set up the context
         if( GLimp_StartDriverAndSetMode( r_mode->integer, r_fullscreen->integer, r_noborder->integer,
@@ -469,7 +469,7 @@ void GLimp_Init( void )
             goto success;
 
         // Try again, this time in a platform specific "safe mode"
-        Sys_GLimpSafeInit( );
+        ri.Sys_GLimpSafeInit( );
 
         if( GLimp_StartDriverAndSetMode( r_mode->integer, r_fullscreen->integer, qfalse,
                 (NativeWindowType)ri.Cvar_Get("vc_wnd", "0", CVAR_LATCH)->integer))
