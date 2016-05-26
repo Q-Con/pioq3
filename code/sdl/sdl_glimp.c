@@ -280,6 +280,7 @@ static qboolean GLimp_StartDriverAndSetMode( int mode, qboolean fullscreen, qboo
         if (!SDL_WasInit(SDL_INIT_VIDEO))
         {
 		const char *driverName;
+                putenv("SDL_VIDEODRIVER=fbcon");
 
 		if (SDL_Init(SDL_INIT_VIDEO) != 0)
                 {
