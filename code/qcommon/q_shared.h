@@ -160,6 +160,9 @@ typedef int intptr_t;
 #include <ctype.h>
 #include <limits.h>
 
+#define sin(f) sinf(f)
+#define cos(f) cosf(f)
+
 #ifdef _MSC_VER
   #include <io.h>
 
